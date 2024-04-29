@@ -1,0 +1,17 @@
+{
+  "rules": {
+    "Button": {
+      "invalidButton": "It should not be invalid",
+      "redButton": "It should not be red button",
+      "toManyClicks": "More than 3 clicks are not allowed in 10 seconds"
+    },
+    "Text": {
+      "invalidText": "Enter more than 300 chars",
+      "badWord": "No bad words are allowed",
+      "manySpecialChars": "No more than 10 special chars"
+    },
+    "Screen": {
+      "soMuchScreenTime": "Should not have screen time of more than 10 secs"
+    }
+  }
+}
