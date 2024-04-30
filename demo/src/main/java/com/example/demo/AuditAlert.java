@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -20,6 +21,15 @@ public class AuditAlert {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    ButtonAlert buttonAlert;
+
+    @Autowired
+    TextAlert textAlert;
+
+    @Autowired
+    SessionAlert sessionAlert;
+
     public void createAlert(AuditEvent event) throws JsonProcessingException {
         AuditEvents auditEvent = event.getAuditEvent();
         System.out.println(auditEvent.equals(AuditEvents.BUTTON));
@@ -33,20 +43,42 @@ public class AuditAlert {
     }
 
     private void processSessionEvent(AuditEvent event) {
-
+        Map<String, Map<String, String>> rules = getRules();
+        try {
+            Map<String, String> buttonRules = rules.get("Screen");
+            for (Map.Entry<String, String> entry : buttonRules.entrySet()) {
+                sessionAlert.checkAlert(event, entry);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     private void processInputEvent(AuditEvent event) {
+        Map<String, Map<String, String>> rules = getRules();
+        try {
+            Map<String, String> buttonRules = rules.get("Text");
+            for (Map.Entry<String, String> entry : buttonRules.entrySet()) {
+                textAlert.checkAlert(event, entry);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     private void processButtonEvent(AuditEvent event) throws JsonProcessingException {
-        Map<String, String> rules = getRules();
-        System.out.println(rules.get("Button"));
-//        LinkedHashMap button = objectMapper.readValue(rules.get("Button"), LinkedHashMap.class);
-//        System.out.println(button);
+        Map<String, Map<String, String>> rules = getRules();
+        try {
+            Map<String, String> buttonRules = rules.get("Button");
+            for (Map.Entry<String, String> entry : buttonRules.entrySet()) {
+                buttonAlert.checkAlert(event, entry);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
-    private Map<String, String> getRules() {
+    private Map<String, Map<String, String>> getRules() {
         return rulesConfig.getRules().get("rules");
     }
 }

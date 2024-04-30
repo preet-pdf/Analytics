@@ -14,7 +14,7 @@ import java.util.Map;
 @Component
 public class ValidationRules {
 
-    private Map<String, Map<String, String>> rules;
+    private Map<String, Map<String, Map<String, String>>> rules;
 
     @PostConstruct
     public void loadRules() throws IOException {
