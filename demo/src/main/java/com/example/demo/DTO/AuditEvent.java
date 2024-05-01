@@ -1,5 +1,6 @@
-package com.example.demo;
+package com.example.demo.DTO;
 
+import com.example.demo.Enum.AuditEvents;
 import lombok.Data;
 
 import java.util.Date;

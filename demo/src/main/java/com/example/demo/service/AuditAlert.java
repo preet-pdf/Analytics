@@ -1,12 +1,13 @@
-package com.example.demo;
+package com.example.demo.service;
 
+import com.example.demo.DTO.AuditEvent;
+import com.example.demo.Enum.AuditEvents;
+import com.example.demo.resource.SessionAlert;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component

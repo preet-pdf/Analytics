@@ -1,5 +1,6 @@
-package com.example.demo;
+package com.example.demo.service;
 
+import com.example.demo.DTO.AuditEvent;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;

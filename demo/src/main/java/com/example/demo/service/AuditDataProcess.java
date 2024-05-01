@@ -1,11 +1,16 @@
-package com.example.demo;
+package com.example.demo.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.DTO.AuditEvent;
+import com.example.demo.Enum.AuditEvents;
 import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
 public class AuditDataProcess {
+
+    static final Map<String, List<Long>> buttonClickedTime = new HashMap<>();
+
+    static final int MAX_CLICKED = 3;
 
     private static final Map<Integer, Map<AuditEvents, List<Map<String, Integer>>>> eventTypeCountsPerHour = new HashMap<>();
 
@@ -19,6 +24,7 @@ public class AuditDataProcess {
 
         eventTypeCounts.putIfAbsent(event.getAuditEvent(), new ArrayList<>());
         List<Map<String, Integer>> eventDataList = eventTypeCounts.get(event.getAuditEvent());
+
 
         Map<String, Integer> eventDataMap = null;
         for (Map<String, Integer> map : eventDataList) {
@@ -34,8 +40,23 @@ public class AuditDataProcess {
         }
 
         eventDataMap.put(event.getEventData(), eventDataMap.getOrDefault(event.getEventData(), 0) + 1);
+
+        if (event.getAuditEvent().equals(AuditEvents.BUTTON)) {
+            Date eventTime = event.getEventTime();
+            long epochSeconds = eventTime.getTime() / 1000;
+            List<Long> newClickedTimeButton = processList(buttonClickedTime.get(event.getEventData()), epochSeconds);
+            buttonClickedTime.put(event.getEventData(), newClickedTimeButton);
+        }
     }
 
+    private static List<Long> processList(List<Long> inputList, long timeTaken) {
+        inputList.add(timeTaken);
+        inputList.sort((t1, t2) -> Long.compare(t2, t1));
+        if (inputList.size() > MAX_CLICKED) {
+            inputList.remove(3);
+        }
+        return inputList;
+    }
 
     public void printEventTypeCountsPerHour() {
         for (Map.Entry<Integer, Map<AuditEvents, List<Map<String, Integer>>>> entry : eventTypeCountsPerHour.entrySet()) {
@@ -52,8 +73,6 @@ public class AuditDataProcess {
                             System.out.println(audit);
                         }
                 );
-//                int count = eventTypeEntry.getValue();
-//                System.out.println("\tEventType: " + eventType + ", Count: " + count);
             }
         }
     }

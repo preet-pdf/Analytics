@@ -1,5 +1,8 @@
-package com.example.demo;
+package com.example.demo.resource;
 
+import com.example.demo.DTO.AuditEvent;
+import com.example.demo.service.AuditAlert;
+import com.example.demo.service.AuditDataProcess;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
