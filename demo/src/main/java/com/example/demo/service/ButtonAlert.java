@@ -29,7 +29,8 @@ public class ButtonAlert {
     public boolean shouldNotClickedTooMuch(AuditEvent event) {
         Map<String, List<Long>> buttonClickedTime = AuditDataProcess.buttonClickedTime;
         List<Long> buttonClickedTimeList = buttonClickedTime.get(event.getEventData());
-        if (buttonClickedTimeList.size() <= AuditDataProcess.MAX_CLICKED) {
+        System.out.println(buttonClickedTimeList);
+        if (buttonClickedTimeList.size() < AuditDataProcess.MAX_CLICKED) {
             return false;
         } else return (buttonClickedTimeList.get(AuditDataProcess.MAX_CLICKED - 1) - buttonClickedTimeList.get(0)) <= 10;
     }
@@ -39,28 +40,40 @@ public class ButtonAlert {
         return now.toEpochMilli();
     }
 
-    public List<AlertDTO> checkAlert(AuditEvent event, Map.Entry<String, String> entry) {
+    public AlertDTO checkAlert(AuditEvent event, Map.Entry<String, String> entry) {
         String RuleName = entry.getKey();
         String RuleDesc = entry.getValue();
-        List<AlertDTO> buttonAlertList = new ArrayList<>();
 
         if (RuleName.equals("invalidButton") && inValidButton(event)) {
+            System.out.println("invalidButtom");
             long currentEpochTime = getCurrentEpochTime();
-            AlertDTO alertDTO = AlertDTO.builder()
+            return AlertDTO.builder()
                     .auditEvent(event)
                     .ruleName(RuleName)
                     .ruleDescription(RuleDesc)
                     .createdTime(currentEpochTime)
                     .build();
-            buttonAlertList.add(alertDTO);
+
         } else if (RuleName.equals("redButton") && shouldNotBeRedButton(event)) {
+            System.out.println("redButton");
             long currentEpochTime = getCurrentEpochTime();
+            return AlertDTO.builder()
+                    .auditEvent(event)
+                    .ruleName(RuleName)
+                    .ruleDescription(RuleDesc)
+                    .createdTime(currentEpochTime)
+                    .build();
 
         } else if (RuleName.equals("toManyClicks") && shouldNotClickedTooMuch(event)) {
+            System.out.println("Here");
             long currentEpochTime = getCurrentEpochTime();
-
+            return AlertDTO.builder()
+                    .auditEvent(event)
+                    .ruleName(RuleName)
+                    .ruleDescription(RuleDesc)
+                    .createdTime(currentEpochTime)
+                    .build();
         }
-
-        return buttonAlertList;
+        return AlertDTO.builder().build();
     }
 }

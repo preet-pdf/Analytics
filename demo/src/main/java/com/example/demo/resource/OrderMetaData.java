@@ -35,10 +35,9 @@ public class OrderMetaData {
             // Here you have the deserialized AuditEvent object
             // You can now process it as needed
             LOGGER.info("Received audit event: " + auditEvent);
-            auditAlert.createAlert(auditEvent);
             auditDataProcess.processAuditEvent(auditEvent);
+            auditAlert.createAlert(auditEvent);
             auditDataProcess.printEventTypeCountsPerHour();
-
         } catch (Exception e) {
             LOGGER.error("Error deserializing audit event: " + e.getMessage());
         }

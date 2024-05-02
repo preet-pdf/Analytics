@@ -1,13 +1,14 @@
 package com.example.demo.service;
 
+import com.example.demo.DTO.AlertDTO;
 import com.example.demo.DTO.AuditEvent;
 import com.example.demo.Enum.AuditEvents;
-import com.example.demo.resource.SessionAlert;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 @Component
@@ -31,16 +32,19 @@ public class AuditAlert {
     @Autowired
     SessionAlert sessionAlert;
 
+    public static ArrayList<AlertDTO> alertList = new ArrayList<>();
+
     public void createAlert(AuditEvent event) throws JsonProcessingException {
         AuditEvents auditEvent = event.getAuditEvent();
         System.out.println(auditEvent.equals(AuditEvents.BUTTON));
         if (auditEvent.equals(AuditEvents.BUTTON)) {
-            processButtonEvent (event);
+            processButtonEvent(event);
         } else if (auditEvent.equals(AuditEvents.INPUT)) {
             processInputEvent(event);
         } else if (auditEvent.equals(AuditEvents.SESSION)) {
             processSessionEvent(event);
         }
+        System.out.println(alertList);
     }
 
     private void processSessionEvent(AuditEvent event) {
@@ -72,7 +76,10 @@ public class AuditAlert {
         try {
             Map<String, String> buttonRules = rules.get("Button");
             for (Map.Entry<String, String> entry : buttonRules.entrySet()) {
-                buttonAlert.checkAlert(event, entry);
+                AlertDTO alert = buttonAlert.checkAlert(event, entry);
+                if (alert.getRuleName() != null) {
+                    alertList.add(alert);
+                }
             }
         } catch (Exception e) {
             System.out.println(e);

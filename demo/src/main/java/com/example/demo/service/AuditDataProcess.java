@@ -44,8 +44,9 @@ public class AuditDataProcess {
         if (event.getAuditEvent().equals(AuditEvents.BUTTON)) {
             Date eventTime = event.getEventTime();
             long epochSeconds = eventTime.getTime() / 1000;
-            List<Long> newClickedTimeButton = processList(buttonClickedTime.get(event.getEventData()), epochSeconds);
+            List<Long> newClickedTimeButton = processList(buttonClickedTime.getOrDefault(event.getEventData(), new ArrayList<>()), epochSeconds);
             buttonClickedTime.put(event.getEventData(), newClickedTimeButton);
+            System.out.println(buttonClickedTime);
         }
     }
 
