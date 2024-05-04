@@ -69,6 +69,7 @@ public class TextAlert {
                 return true;
             }
         }
+        return false;
     }
 
     public boolean shouldNotContainSoManySpecialChars(AuditEvent event) {
