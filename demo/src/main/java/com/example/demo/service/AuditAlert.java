@@ -52,7 +52,10 @@ public class AuditAlert {
         try {
             Map<String, String> buttonRules = rules.get("Screen");
             for (Map.Entry<String, String> entry : buttonRules.entrySet()) {
-                sessionAlert.checkAlert(event, entry);
+                AlertDTO alert = sessionAlert.checkAlert(event, entry);
+                if (alert.getRuleName() != null) {
+                    alertList.add(alert);
+                }
             }
         } catch (Exception e) {
             System.out.println(e);
@@ -64,7 +67,10 @@ public class AuditAlert {
         try {
             Map<String, String> buttonRules = rules.get("Text");
             for (Map.Entry<String, String> entry : buttonRules.entrySet()) {
-                textAlert.checkAlert(event, entry);
+                AlertDTO alert = textAlert.checkAlert(event, entry);
+                if (alert.getRuleName() != null) {
+                    alertList.add(alert);
+                }
             }
         } catch (Exception e) {
             System.out.println(e);

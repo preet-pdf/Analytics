@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.DTO.AlertDTO;
 import com.example.demo.DTO.AuditEvent;
+import com.example.demo.utils.GetTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,9 @@ public class ButtonAlert {
 
     @Autowired
     AuditDataProcess auditDataProcess;
+
+    @Autowired
+    GetTime getTime;
 
     public boolean inValidButton(AuditEvent event) {
         if (event.getEventType().equals("invalid_button")) return true;
@@ -35,18 +39,13 @@ public class ButtonAlert {
         } else return (buttonClickedTimeList.get(AuditDataProcess.MAX_CLICKED - 1) - buttonClickedTimeList.get(0)) <= 10;
     }
 
-    private long getCurrentEpochTime() {
-        Instant now = Instant.now();
-        return now.toEpochMilli();
-    }
-
     public AlertDTO checkAlert(AuditEvent event, Map.Entry<String, String> entry) {
         String RuleName = entry.getKey();
         String RuleDesc = entry.getValue();
 
         if (RuleName.equals("invalidButton") && inValidButton(event)) {
             System.out.println("invalidButtom");
-            long currentEpochTime = getCurrentEpochTime();
+            long currentEpochTime = getTime.getCurrentEpochTime();
             return AlertDTO.builder()
                     .auditEvent(event)
                     .ruleName(RuleName)
@@ -56,7 +55,7 @@ public class ButtonAlert {
 
         } else if (RuleName.equals("redButton") && shouldNotBeRedButton(event)) {
             System.out.println("redButton");
-            long currentEpochTime = getCurrentEpochTime();
+            long currentEpochTime = getTime.getCurrentEpochTime();
             return AlertDTO.builder()
                     .auditEvent(event)
                     .ruleName(RuleName)
@@ -66,7 +65,7 @@ public class ButtonAlert {
 
         } else if (RuleName.equals("toManyClicks") && shouldNotClickedTooMuch(event)) {
             System.out.println("Here");
-            long currentEpochTime = getCurrentEpochTime();
+            long currentEpochTime = getTime.getCurrentEpochTime();
             return AlertDTO.builder()
                     .auditEvent(event)
                     .ruleName(RuleName)
