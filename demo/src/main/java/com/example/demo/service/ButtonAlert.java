@@ -34,9 +34,10 @@ public class ButtonAlert {
         Map<String, List<Long>> buttonClickedTime = AuditDataProcess.buttonClickedTime;
         List<Long> buttonClickedTimeList = buttonClickedTime.get(event.getEventData());
         System.out.println(buttonClickedTimeList);
+        System.out.println((buttonClickedTimeList.get(AuditDataProcess.MAX_CLICKED - 1) - buttonClickedTimeList.get(0)));
         if (buttonClickedTimeList.size() < AuditDataProcess.MAX_CLICKED) {
             return false;
-        } else return (buttonClickedTimeList.get(AuditDataProcess.MAX_CLICKED - 1) - buttonClickedTimeList.get(0)) <= 10;
+        } else return (buttonClickedTimeList.get(0) - buttonClickedTimeList.get(AuditDataProcess.MAX_CLICKED - 1)) <= 10;
     }
 
     public AlertDTO checkAlert(AuditEvent event, Map.Entry<String, String> entry) {

@@ -35,7 +35,7 @@ public class TextAlert {
     private static Set<String> loadBadWordsFromResource() {
         Set<String> badWords = new HashSet<>();
         try {
-            ClassPathResource resource = new ClassPathResource("/Users/preetparikh/Downloads/Analytics/demo/src/main/resources/badWords");
+            ClassPathResource resource = new ClassPathResource("badWords.txt");
             InputStream inputStream = resource.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
@@ -49,6 +49,7 @@ public class TextAlert {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println(badWords);
         return badWords;
     }
 
@@ -62,7 +63,6 @@ public class TextAlert {
     public boolean shouldNotContainBadWords(AuditEvent event) {
         /*check bad words in string*/
         String[] words = event.getEventData().split("[^\\w]+");
-        System.out.println(badWordsSet);
 
         for (String word : words) {
             if (badWordsSet.contains(word)) {
@@ -73,14 +73,14 @@ public class TextAlert {
     }
 
     public boolean shouldNotContainSoManySpecialChars(AuditEvent event) {
-        /*it should not have more than 5 special chars or emojis*/
+        /*it should not have more than 10 special chars or emojis*/
         Pattern specialCharsPattern = Pattern.compile("[!@#$%&*()_+=|^<>?{}\\[\\]~-]");
         Matcher matcher = specialCharsPattern.matcher(event.getEventData());
         int specialCharCount = 0;
         while (matcher.find()) {
             specialCharCount++;
         }
-        return specialCharCount > 5;
+        return specialCharCount > 10;
 
     }
 

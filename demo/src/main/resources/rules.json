@@ -11,7 +11,7 @@
       "manySpecialChars": "No more than 10 special chars"
     },
     "Screen": {
-      "soMuchScreenTime": "Should not have screen time of more than 10 secs"
+      "soMuchScreenTime": "Should not have screen time of more than 10 mins"
     }
   }
 }
