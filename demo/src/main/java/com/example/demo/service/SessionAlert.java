@@ -16,7 +16,7 @@ public class SessionAlert {
 
     public boolean toMuchScreenTime(AuditEvent event) {
         /*should not have screen time of more than 10 mins*/
-        return Integer.getInteger(event.getEventData()) >= 600;
+        return Integer.parseInt(event.getEventData()) >= 600;
     }
 
     public AlertDTO checkAlert(AuditEvent event, Map.Entry<String, String> entry) {
