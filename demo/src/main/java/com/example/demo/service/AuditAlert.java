@@ -34,62 +34,66 @@ public class AuditAlert {
 
     public static ArrayList<AlertDTO> alertList = new ArrayList<>();
 
-    public void createAlert(AuditEvent event) throws JsonProcessingException {
+    public AlertDTO createAlert(AuditEvent event) throws JsonProcessingException {
         AuditEvents auditEvent = event.getAuditEvent();
         System.out.println(auditEvent.equals(AuditEvents.BUTTON));
         if (auditEvent.equals(AuditEvents.BUTTON)) {
-            processButtonEvent(event);
+            return processButtonEvent(event);
         } else if (auditEvent.equals(AuditEvents.INPUT)) {
-            processInputEvent(event);
+            return processInputEvent(event);
         } else if (auditEvent.equals(AuditEvents.SESSION)) {
-            processSessionEvent(event);
+            return processSessionEvent(event);
         }
         System.out.println(alertList);
+        return null;
     }
 
-    private void processSessionEvent(AuditEvent event) {
+    private AlertDTO processSessionEvent(AuditEvent event) {
         Map<String, Map<String, String>> rules = getRules();
         try {
             Map<String, String> buttonRules = rules.get("Screen");
             for (Map.Entry<String, String> entry : buttonRules.entrySet()) {
                 AlertDTO alert = sessionAlert.checkAlert(event, entry);
                 if (alert.getRuleName() != null) {
-                    alertList.add(alert);
+                    return alert;
                 }
             }
         } catch (Exception e) {
             System.out.println(e);
         }
+        return null;
     }
 
-    private void processInputEvent(AuditEvent event) {
+    private AlertDTO processInputEvent(AuditEvent event) {
         Map<String, Map<String, String>> rules = getRules();
         try {
             Map<String, String> buttonRules = rules.get("Text");
             for (Map.Entry<String, String> entry : buttonRules.entrySet()) {
                 AlertDTO alert = textAlert.checkAlert(event, entry);
                 if (alert.getRuleName() != null) {
-                    alertList.add(alert);
+                    return alert;
                 }
             }
         } catch (Exception e) {
             System.out.println(e);
         }
+        return null;
     }
 
-    private void processButtonEvent(AuditEvent event) throws JsonProcessingException {
+    private AlertDTO processButtonEvent(AuditEvent event) throws JsonProcessingException {
         Map<String, Map<String, String>> rules = getRules();
         try {
             Map<String, String> buttonRules = rules.get("Button");
             for (Map.Entry<String, String> entry : buttonRules.entrySet()) {
                 AlertDTO alert = buttonAlert.checkAlert(event, entry);
                 if (alert.getRuleName() != null) {
-                    alertList.add(alert);
+                    return alert;
                 }
             }
         } catch (Exception e) {
             System.out.println(e);
         }
+        return null;
     }
 
     private Map<String, Map<String, String>> getRules() {

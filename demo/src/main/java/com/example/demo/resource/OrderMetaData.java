@@ -1,11 +1,14 @@
 package com.example.demo.resource;
 
+import com.example.demo.DTO.AlertDTO;
 import com.example.demo.DTO.AuditEvent;
 import com.example.demo.service.AuditAlert;
 import com.example.demo.service.AuditDataProcess;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +16,14 @@ import org.slf4j.LoggerFactory;
 @Component
 public class OrderMetaData {
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderMetaData.class);
+
+    @Autowired
+    private KafkaTemplate<Object, String> kafkaTemplate;
+
+    public void sendAlertData(AlertDTO alertDTO) throws JsonProcessingException {
+        String alertDataDTO = objectMapper.writeValueAsString(alertDTO);
+        kafkaTemplate.send("alert", alertDataDTO);
+    }
 
     @Autowired
     ObjectMapper objectMapper;
@@ -36,7 +47,10 @@ public class OrderMetaData {
             // You can now process it as needed
             LOGGER.info("Received audit event: " + auditEvent);
             auditDataProcess.processAuditEvent(auditEvent);
-            auditAlert.createAlert(auditEvent);
+            AlertDTO alertDTO = auditAlert.createAlert(auditEvent);
+            if (alertDTO != null) {
+                sendAlertData(alertDTO);
+            }
             auditDataProcess.printEventTypeCountsPerHour();
         } catch (Exception e) {
             LOGGER.error("Error deserializing audit event: " + e.getMessage());
