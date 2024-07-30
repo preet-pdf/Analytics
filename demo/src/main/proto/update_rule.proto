@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.org.grpc";
+
+message UpdateRuleRequest {
+  bool status = 1;
+}
+
+message UpdateRuleResponse {
+  string response = 1;
+}
+
+service UpdateRuleService {
+  rpc UpdateRule(stream UpdateRuleRequest) returns (stream UpdateRuleResponse);
+}
+
+message AlertRequest {
+  bool status = 1;
+}
+
+message AlertResponse {
+  string response = 1;
+}
+
+service UpdateAlertStatusService {
+  rpc UpdateAlertStatus (stream AlertRequest) returns (stream AlertResponse);
+}

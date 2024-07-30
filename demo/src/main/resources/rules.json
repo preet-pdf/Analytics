@@ -1,5 +1,6 @@
 {
   "rules": {
+    "StopRule": { "StopAllRule": false},
     "Button": {
       "invalidButton": "It should not be invalid",
       "redButton": "It should not be red button",

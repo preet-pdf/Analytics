@@ -1,12 +1,18 @@
 package com.example.demo.service;
 
 import com.example.demo.DTO.AuditEvent;
+//import com.example.demo.Entity.AuditDataEntity;
 import com.example.demo.Enum.AuditEvents;
+//import com.example.demo.repositories.AuditDataRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
 public class AuditDataProcess {
+
+//    @Autowired
+//    AuditDataRepository auditDataRepository;
 
     static final Map<String, List<Long>> buttonClickedTime = new HashMap<>();
 
@@ -15,6 +21,10 @@ public class AuditDataProcess {
     private static final Map<Integer, Map<AuditEvents, List<Map<String, Integer>>>> eventTypeCountsPerHour = new HashMap<>();
 
     public void processAuditEvent(AuditEvent event) {
+
+        // Before calculating Data save it tp snowflake
+        // TODO: Update all the snowflake method as its in process rn
+//        saveToSnowFlake(event);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(event.getEventTime());
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -49,6 +59,15 @@ public class AuditDataProcess {
             System.out.println(buttonClickedTime);
         }
     }
+
+//    public void saveToSnowFlake(AuditEvent event) {
+//        AuditDataEntity auditDataEntity = new AuditDataEntity();
+////        auditDataEntity.setAuditEvent(event.getAuditEvent());
+//        auditDataEntity.setEventData(event.getEventData());
+//        auditDataEntity.setEventTime(event.getEventTime());
+//        auditDataEntity.setEventType(event.getEventType());
+//        auditDataRepository.save(auditDataEntity);
+//    }
 
     private static List<Long> processList(List<Long> inputList, long timeTaken) {
         inputList.add(timeTaken);

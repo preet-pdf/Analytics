@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.DTO.AlertDTO;
 import com.example.demo.DTO.AuditEvent;
 import com.example.demo.Enum.AuditEvents;
+import com.example.demo.utils.ValidationRules;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
