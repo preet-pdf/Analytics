@@ -21,7 +21,9 @@ public class ButtonAlert {
     GetTime getTime;
 
     public boolean inValidButton(AuditEvent event) {
-        if ((event.getEventType().equals("alert_toggle") || event.getEventType().equals("rule_toggle")) && event.getEventData().equals("false")) return true;
+        if ((event.getEventType().equals("alert_toggle_button") || event.getEventType().equals("rule_toggle_button")) && (event.getEventData().equals("rule_false")
+                || event.getEventData().equals("alert_false")
+                )) return true;
         return false;
     }
 
@@ -32,9 +34,10 @@ public class ButtonAlert {
 
     public boolean shouldNotClickedTooMuch(AuditEvent event) {
         if (event.getEventType().equals("create_user_button_click")
-                || event.getEventType().equals("create_role_and_assign_permission")
-                || event.getEventType().equals("create_role")
-                || event.getEventType().equals("assign_permission")) {
+                || event.getEventType().equals("create_user_button")
+                || event.getEventType().equals("create_role_and_assign_permission_button")
+                || event.getEventType().equals("create_role_button")
+                || event.getEventType().equals("assign_permission_button")) {
             Map<String, List<Long>> buttonClickedTime = AuditDataProcess.buttonClickedTime;
             List<Long> buttonClickedTimeList = buttonClickedTime.get(event.getEventData());
             System.out.println(buttonClickedTimeList);
