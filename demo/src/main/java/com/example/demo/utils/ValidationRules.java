@@ -1,8 +1,11 @@
 package com.example.demo.utils;
 
+import com.example.demo.service.ConfigurationService;
+import com.example.demo.service.ConsulConfigurationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -32,6 +35,11 @@ public class ValidationRules {
         System.out.println(rules);
         return rules;
 //        writeRules = mapper.writeValueAsString(resource.getInputStream());
+    }
+
+    @Bean
+    public ConfigurationService configurationService() {
+        return new ConsulConfigurationService();
     }
 
 }

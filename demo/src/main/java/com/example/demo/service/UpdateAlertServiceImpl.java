@@ -24,6 +24,9 @@ public class UpdateAlertServiceImpl extends UpdateAlertStatusServiceGrpc.UpdateA
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    ConfigurationService configurationService;
+
 
     @Override
     public StreamObserver<AlertRequest> updateAlertStatus(StreamObserver<AlertResponse> responseObserver) {
@@ -32,6 +35,7 @@ public class UpdateAlertServiceImpl extends UpdateAlertStatusServiceGrpc.UpdateA
             @Override
             public void onNext(AlertRequest alertRequest) {
                 LOGGER.info("Alert Request Received: " + alertRequest.getStatus());
+                configurationService.setAlertStatus(alertRequest.getStatus());
                 AlertResponse response = AlertResponse.newBuilder()
                         .setResponse("Status received: " + alertRequest.getStatus())
                         .build();

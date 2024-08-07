@@ -4,6 +4,7 @@ import com.example.demo.DTO.AlertDTO;
 import com.example.demo.DTO.AuditEvent;
 import com.example.demo.service.AuditAlert;
 import com.example.demo.service.AuditDataProcess;
+import com.example.demo.service.ConfigurationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,9 @@ public class OrderMetaData {
     @Autowired
     AuditAlert auditAlert;
 
+    @Autowired
+    ConfigurationService configurationService;
+
     @KafkaListener(topics = "ordersss", groupId = "baristas")
     public void process(com.example.webdevelopment.DTO.OrderDetails order) {
         LOGGER.info(order.toString());
@@ -47,9 +51,14 @@ public class OrderMetaData {
             // You can now process it as needed
             LOGGER.info("Received audit event: " + auditEvent);
             auditDataProcess.processAuditEvent(auditEvent);
-            AlertDTO alertDTO = auditAlert.createAlert(auditEvent);
-            if (alertDTO != null) {
-                sendAlertData(alertDTO);
+            System.out.println(configurationService.getRuleStatus());
+
+            if (configurationService.getRuleStatus()) {
+                AlertDTO alertDTO = auditAlert.createAlert(auditEvent);
+                System.out.println(alertDTO);
+                if (alertDTO != null) {
+                    sendAlertData(alertDTO);
+                }
             }
             auditDataProcess.printEventTypeCountsPerHour();
         } catch (Exception e) {

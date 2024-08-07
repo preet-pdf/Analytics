@@ -31,6 +31,9 @@ public class UpdateRuleServiceImpl extends UpdateRuleServiceGrpc.UpdateRuleServi
         return rulesConfig.getRulesOnly();
     }
 
+    @Autowired
+    ConfigurationService configurationService;
+
     @Override
     public StreamObserver<UpdateRuleRequest> updateRule(StreamObserver<UpdateRuleResponse> responseObserver) {
 
@@ -38,19 +41,7 @@ public class UpdateRuleServiceImpl extends UpdateRuleServiceGrpc.UpdateRuleServi
             @Override
             public void onNext(UpdateRuleRequest request) {
                 LOGGER.info("Request Received: " + request.getStatus());
-                Map<String, Map<String, Boolean>> rules = null;
-                System.out.println(rulesConfig.getRules());
-                rules = getRules();
-                rules.get("StopRule").put("StopAllRule", (request.getStatus()));
-                System.out.println(rules.get("StopRule").get("StopAllRule"));
-                try {
-                    File file = rulesConfig.getFileResource();
-                    System.out.println(file);
-                    objectMapper.writeValue(file, rules);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                // Handle the incoming request and send a response
+                configurationService.setRuleStatus(request.getStatus());
                 UpdateRuleResponse response = UpdateRuleResponse.newBuilder()
                         .setResponse("Status received: " + request.getStatus())
                         .build();

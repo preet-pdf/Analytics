@@ -21,23 +21,31 @@ public class ButtonAlert {
     GetTime getTime;
 
     public boolean inValidButton(AuditEvent event) {
-        if (event.getEventType().equals("invalid_button")) return true;
+        if ((event.getEventType().equals("alert_toggle") || event.getEventType().equals("rule_toggle")) && event.getEventData().equals("false")) return true;
         return false;
     }
 
     public boolean shouldNotBeRedButton(AuditEvent event) {
-        if (event.getEventType().equals("button_double_clicked")) return true;
+        if (event.getEventType().equals("signin_button_click") || event.getEventType().equals("logout_button_click")) return true;
         return false;
     }
 
     public boolean shouldNotClickedTooMuch(AuditEvent event) {
-        Map<String, List<Long>> buttonClickedTime = AuditDataProcess.buttonClickedTime;
-        List<Long> buttonClickedTimeList = buttonClickedTime.get(event.getEventData());
-        System.out.println(buttonClickedTimeList);
-        System.out.println((buttonClickedTimeList.get(AuditDataProcess.MAX_CLICKED - 1) - buttonClickedTimeList.get(0)));
-        if (buttonClickedTimeList.size() < AuditDataProcess.MAX_CLICKED) {
+        if (event.getEventType().equals("create_user_button_click")
+                || event.getEventType().equals("create_role_and_assign_permission")
+                || event.getEventType().equals("create_role")
+                || event.getEventType().equals("assign_permission")) {
+            Map<String, List<Long>> buttonClickedTime = AuditDataProcess.buttonClickedTime;
+            List<Long> buttonClickedTimeList = buttonClickedTime.get(event.getEventData());
+            System.out.println(buttonClickedTimeList);
+            System.out.println((buttonClickedTimeList.get(AuditDataProcess.MAX_CLICKED - 1) - buttonClickedTimeList.get(0)));
+            if (buttonClickedTimeList.size() < AuditDataProcess.MAX_CLICKED) {
+                return false;
+            } else
+                return (buttonClickedTimeList.get(0) - buttonClickedTimeList.get(AuditDataProcess.MAX_CLICKED - 1)) <= 10;
+        } else {
             return false;
-        } else return (buttonClickedTimeList.get(0) - buttonClickedTimeList.get(AuditDataProcess.MAX_CLICKED - 1)) <= 10;
+        }
     }
 
     public AlertDTO checkAlert(AuditEvent event, Map.Entry<String, String> entry) {
