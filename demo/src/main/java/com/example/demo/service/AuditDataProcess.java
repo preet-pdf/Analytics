@@ -4,6 +4,9 @@ import com.example.demo.DTO.AuditEvent;
 //import com.example.demo.Entity.AuditDataEntity;
 import com.example.demo.Enum.AuditEvents;
 //import com.example.demo.repositories.AuditDataRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.*;
@@ -11,8 +14,6 @@ import java.util.*;
 @Component
 public class AuditDataProcess {
 
-//    @Autowired
-//    AuditDataRepository auditDataRepository;
 
     static final Map<String, List<Long>> buttonClickedTime = new HashMap<>();
 
@@ -96,6 +97,36 @@ public class AuditDataProcess {
             }
         }
     }
+
+    public ObjectNode getEventTypeCountsPerHour() {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode resultJson = mapper.createObjectNode();
+
+        for (Map.Entry<Integer, Map<AuditEvents, List<Map<String, Integer>>>> entry : eventTypeCountsPerHour.entrySet()) {
+            int hour = entry.getKey();
+            Map<AuditEvents, List<Map<String, Integer>>> eventTypeCounts = entry.getValue();
+
+            ObjectNode hourJson = mapper.createObjectNode();
+            for (Map.Entry<AuditEvents, List<Map<String, Integer>>> eventTypeEntry : eventTypeCounts.entrySet()) {
+                AuditEvents auditType = eventTypeEntry.getKey();
+                ArrayNode auditsArray = mapper.createArrayNode();
+
+                List<Map<String, Integer>> value = eventTypeEntry.getValue();
+                value.forEach(audit -> {
+                    ObjectNode auditJson = mapper.createObjectNode();
+                    audit.forEach(auditJson::put);
+                    auditsArray.add(auditJson);
+                });
+
+                hourJson.set(auditType.toString(), auditsArray);
+            }
+
+            resultJson.set("Hour " + hour, hourJson);
+        }
+
+        return resultJson;
+    }
+
 
 
 }

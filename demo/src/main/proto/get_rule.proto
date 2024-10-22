@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.org.grpc";
+option java_outer_classname = "GetRuleServiceProto";
+
+message GetRuleResponse {
+  string response = 1;
+}
+
+service GetRuleService {
+  rpc GetRule(Void) returns (GetRuleResponse);
+}
+
+message Void {}
